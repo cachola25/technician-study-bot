@@ -21,7 +21,7 @@ export default function StudyBotMain() {
         if (!text) {
             return;
         }
-        setMessages((prev) => [...prev, {role: "user", content: text}]);
+        setMessages((prev) => [...prev, { role: "user", content: text }]);
         setInput("");
     }
     return (
@@ -34,20 +34,39 @@ export default function StudyBotMain() {
                 <div className="border rounded-xl p-20 text-neutral-400">
                     <div>
                         {messages.filter((m) => m.role !== "default")
-                        .map((m, idx) => (
-                            <MessageBubble key={idx} msg={m} />
-                        ))}
+                            .map((m, idx) => (
+                                <MessageBubble key={idx} msg={m} />
+                            ))}
                     </div>
                     Chat area
                 </div>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <textarea
+                            className="text-black resize-none border rounded-xl p-5"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Type your question…"
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter" && !e.shiftKey) {
+                                    e.preventDefault();
+                                    (e.currentTarget.form as HTMLFormElement)?.requestSubmit();
+                                }
+                            }}
+                        />
+                        <button type="submit" disabled={!input.trim()}>
+                            Send
+                        </button>
+                    </div>
+                </form>
             </main>
-
         </div>
 
     );
+
 }
 
-function MessageBubble({ msg }: {msg: ChatMessage}) {
+function MessageBubble({ msg }: { msg: ChatMessage }) {
     const isUser = msg.role === "user";
     const msgType = isUser ? "justify-end" : "justify-start"
     return (
